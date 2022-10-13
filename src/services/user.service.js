@@ -2,6 +2,8 @@ import axios from 'axios';
 import { authHeader, fileUploadHeader } from './auth-header';
 import { API_URL } from '../common/const';
 
+const maxAllowedFileSize = 1024 * 1024 * 10; // 10 MB
+
 class UserService {
   constructor(){
     this.public_content_url = API_URL + "/all";
@@ -34,6 +36,10 @@ class UserService {
   }
 
   createFile(file) {
+    if(file.size > maxAllowedFileSize){
+      var error = {"response" : {"data": {"error" : "File is larger than 10 MBs!" }}};
+      return Promise.reject(error);
+    };
     const formData = new FormData();
     formData.append('file', file);
     formData.append('fileName', file.name);
@@ -41,6 +47,10 @@ class UserService {
   }
 
   changeFile(fileId, file){
+    if(file.size > maxAllowedFileSize){
+      var error = {"response" : {"data": {"error" : "File is larger than 10 MBs!" }}};
+      return Promise.reject(error);
+    };
     const formData = new FormData();
     formData.append('file', file);
     formData.append('fileName', file.name);
